@@ -1,0 +1,8 @@
+{
+    "name" : "OverChat Development",
+    "PORT" : 8080,
+    "db": {
+        "mongoUrl" : "mongodb://localhost:27017/OverChat"
+    },
+    "JWT_SECRET" : "adnaliwdnaowudbjwaou"
+}
