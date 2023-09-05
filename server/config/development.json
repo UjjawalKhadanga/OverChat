@@ -1,0 +1,6 @@
+{
+    "port" : 8080,
+    "dbURI": "mongodb://localhost:27017/OverChat2",
+    "JWT_SECRET" : "adnaliwdnaowudbjwaou",
+    "clientUrl" : "http://localhost:3000"
+}
