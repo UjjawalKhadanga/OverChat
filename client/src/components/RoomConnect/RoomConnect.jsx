@@ -52,7 +52,6 @@ function Card({_id, name, owner, description, isOwner}) {
 
 
 function RoomConnect({userInfo}) {
-  const navigate=useNavigate();
     // random room data to display
     const [rooms,setRooms] = useState([
         {

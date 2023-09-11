@@ -12,12 +12,12 @@ function Message({name,avatar,message}) {
                             <div className="col-md-11">
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <h5 className="card-title fs-6">{name}</h5>
+                                        <div className="card-title h5 opacity-75">{name}</div>
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <p className="card-text">{message}</p>
+                                        <p className="card-text fs-5">{message}</p>
                                     </div>
                                 </div>
                             </div>

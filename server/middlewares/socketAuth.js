@@ -11,7 +11,8 @@ const JWT_SECRET = config.get("JWT_SECRET");
 async function socketAuth(socket, next) {
     try {
         const token = cookie.parse(socket.handshake.headers.cookie).auth;
-        const roomId = socket.handshake.query.roomId;
+        const roomId = socket.handshake.auth.roomId;
+
         const {_id: userId} = jwt.verify(token, JWT_SECRET);
     
         const user = await User.findById(userId).lean();

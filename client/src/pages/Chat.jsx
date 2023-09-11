@@ -4,28 +4,25 @@ import { useParams } from "react-router-dom";
 import ChatBox from "../components/Chat/ChatBox";
 import SideBar from "../components/Chat/SideBar";
 import TypeBox from "../components/Chat/TypeBox";
-import createSocket from "../socket";
-
+import socket from "../socket";
 
 function Chat() {
   const { roomId } = useParams();
 
   const [messages, setMessages] = useState([/*{ sender: {name: "Admin"}, message: "Welcome to the room!", time: Date.now() }*/]);
-  const [socket, setSocket] = useState(createSocket(roomId));
 
   useEffect(() => {
+    socket.auth = {roomId};
     socket.connect();
     socket.on('message', (message, sender, time) =>{
       console.log('Message mil gaya', message, sender);
       setMessages((prev) => [...prev, {sender, message, time}])
     })
-
     return () => {
       socket.off('message');
       socket.disconnect();
-      setSocket(undefined);
     };
-  }, [socket]);
+  }, []);
 
   useEffect(() => {
     // get all the messages from the server
@@ -42,7 +39,7 @@ function Chat() {
         </div>
         <div className="col-md-10 d-flex flex-column min-vh-100">
           <div className="flex-grow-1 p-3"> <ChatBox messages={messages} /> </div>
-          <TypeBox socket={socket}/>
+          <TypeBox />
         </div>
       </div>
   );

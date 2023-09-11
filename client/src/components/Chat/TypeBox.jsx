@@ -1,7 +1,8 @@
 // import axios from 'axios';
 import React from 'react'
+import socket from '../../socket';
 
-function TypeBox({socket}) {
+function TypeBox() {
   const [message, setMessage] = React.useState('');
 
   const handleSend=(e)=>{

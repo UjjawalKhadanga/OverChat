@@ -1,11 +1,8 @@
 import { io } from "socket.io-client";
 
-function createSocket(roomId) {
-    return io("http://localhost:8080", {
-        autoConnect: false,
-        withCredentials: true,
-        query: { roomId }
-    });
-}
+const socket = io("http://localhost:8080", {
+    autoConnect: false,
+    withCredentials: true
+});
 
-export default createSocket;
+export default socket;
