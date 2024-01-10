@@ -21,6 +21,9 @@ function init(server) {
 
         if (!Object.prototype.hasOwnProperty.call(collections, roomId)) collections[roomId] = new Array();
 
+        // Do an identity brodcast
+        socket.emit('identityBrodcast', { user });
+
         // brodcast to the new user all the users that have already joined
         collections[roomId].map(({ user }) => {
             socket.emit('userJoined', { user })

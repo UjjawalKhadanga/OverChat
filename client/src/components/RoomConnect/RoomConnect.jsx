@@ -20,15 +20,15 @@ function Card({_id, name, owner, description, isOwner}) {
   };
 
   return (
-    <div className="col-4 mt-3">
-      <div className="card overflow-auto overflow-hidden">
+    <div className="col-4 mt-3 d-flex flex-wrap" style={{"min-width": "15rem"}}>
+      <div className="card overflow-hidden">
         <div className="card-body">
           <div className="d-flex justify-content-between align-content-between">
             <h5 className=" d-flex align-items-center card-title">{name}</h5>
             <div className="text-muted d-flex small">
               <cite>Owner: {owner.name}</cite>
             </div>
-          </div>
+          </div>50
           <h6 className="card-subtitle mb-2 text-muted small">#{_id}</h6>
           <p className="d-flex justify-content-between">
             {description}

@@ -3,24 +3,23 @@ import { useSocket } from "../../providers/socket";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-function ChatMessage({name,avatar,message}) {
+function ChatMessage({name,avatar,message,isLocal,isAdmin}) {
     return (
-        <div className="row m-2">
-            <div className="col-md-12">
-                <div className="card">
-                    <div className="card-body">
+        <div className={`row m-1`} >
+                <div className={`card  ${isLocal ? 'justify-content-right' : 'justify-content-left' } ${isAdmin ? 'justify-content-center' : ''}`} >
+                    <div className="card-body h-100">
                         <div className="row">
-                            <div className="col-md-1">
-                                <img src={avatar} className="img-fluid rounded-circle" alt="avatar" />
+                            <div className="col-1" style={{'min-width': '4rem'}}>
+                                <img src={avatar} className="img-fluid rounded-circle w-auto" alt="avatar" />
                             </div>
-                            <div className="col-md-11">
+                            <div className="col-11">
                                 <div className="row">
-                                    <div className="col-md-12">
+                                    <div className="col-12">
                                         <div className="card-title h5 opacity-75">{name}</div>
                                     </div>
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-12">
+                                    <div className="col-12">
                                         <p className="card-text fs-5">{message}</p>
                                     </div>
                                 </div>
@@ -28,7 +27,6 @@ function ChatMessage({name,avatar,message}) {
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     )
 }
@@ -40,6 +38,7 @@ function ChatBox() {
     const [messages, setMessages] = useState([/*{ sender: {name: "Admin"}, message: "Welcome to the room!", time: Date.now() }*/]);
     const [typingUsers, setTypingUsers] = useState([]);
     const typingTimoutRef = useRef(null)
+    const [currentUser, setCurentUser] = useState({});
 
     useEffect(() => {
         socket.on('message', (message, sender, time) =>{
@@ -48,11 +47,11 @@ function ChatBox() {
         })
         socket.on('userJoined', ({user}) => {
           console.log('user joined', user);
-          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} joined the room!`, time: Date.now() }])
+          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} joined the room!`, time: Date.now(), isAdmin: true }])
         })
         socket.on('userLeft', ({user}) => {
           console.log('user left', user);
-          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} left the room!`, time: Date.now() }])
+          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} left the room!`, time: Date.now(), isAdmin: true }])
         })
         socket.on('userTyping', ({user}) => {
             typingTimoutRef.current && clearTimeout(typingTimoutRef.current)
@@ -64,11 +63,15 @@ function ChatBox() {
             });
             typingTimoutRef.current = setTimeout(() => setTypingUsers((prev) => prev.filter((u) => u.id !== user.id)), 3000)
         })
+        socket.on('identityBrodcast', ({user}) => setCurentUser(user));
+
         return () => {
             socket.off('message');
             socket.off('userJoined');
             socket.off('userLeft');
             socket.off('userTyping');
+            socket.off('identityBrodcast');
+
         };
       }, [socket]);
 
@@ -87,7 +90,8 @@ function ChatBox() {
                         {
                             messages.length === 0 ? <div className='alert-dismissible'>{ `Itna sannata kyun h bhai :( ... Use chat box to write your first message 👇` }</div> :
                             messages.map((messageObj)=>{
-                                return <ChatMessage key={messageObj} name={messageObj.sender.name} avatar="https://via.placeholder.com/50" message={messageObj.message} />
+                                const isLocal = (currentUser._id === messageObj.sender._id);
+                                return <ChatMessage key={messageObj} name={messageObj.sender.name} avatar="https://via.placeholder.com/50" message={messageObj.message} isLocal={isLocal} isAdmin={messageObj.isAdmin}/>
                             })
                         }
                     </div>
