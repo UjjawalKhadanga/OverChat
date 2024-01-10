@@ -22,7 +22,7 @@ app.use(cors({credentials: true, origin: CLIENT_URL}));
 app.use(cookieParser());
 
 // Database Connection
-mongoose.connect(DB_URI);
+mongoose.connect(DB_URI).then(() => console.log("MongoDB Connected")).catch(err => console.log('Err in connecting to db', err));
 
 
 // Routes

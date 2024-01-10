@@ -1,36 +1,21 @@
-import axios from "axios";
-import React, { useState, useEffect} from "react";
+import React, { useEffect} from "react";
 import { useParams } from "react-router-dom";
 import ChatBox from "../components/Chat/ChatBox";
 import SideBar from "../components/Chat/SideBar";
 import TypeBox from "../components/Chat/TypeBox";
-import socket from "../socket";
+import { useSocket } from "../providers/socket";
 
 function Chat() {
   const { roomId } = useParams();
-
-  const [messages, setMessages] = useState([/*{ sender: {name: "Admin"}, message: "Welcome to the room!", time: Date.now() }*/]);
+  const socket = useSocket();
 
   useEffect(() => {
     socket.auth = {roomId};
     socket.connect();
-    socket.on('message', (message, sender, time) =>{
-      console.log('Message mil gaya', message, sender);
-      setMessages((prev) => [...prev, {sender, message, time}])
-    })
     return () => {
-      socket.off('message');
       socket.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    // get all the messages from the server
-    axios.get(`http://localhost:8080/chat/room/${roomId}`, {withCredentials: true}).then((res) => {
-        console.log(res);
-        setMessages(res.data.chats);
-    });
-  }, [roomId]);
 
   return (
       <div className="row">
@@ -38,7 +23,7 @@ function Chat() {
           <SideBar roomId={roomId}/>
         </div>
         <div className="col-md-10 d-flex flex-column min-vh-100">
-          <div className="flex-grow-1 p-3"> <ChatBox messages={messages} /> </div>
+          <div className="flex-grow-1 p-3"> <ChatBox /> </div>
           <TypeBox />
         </div>
       </div>

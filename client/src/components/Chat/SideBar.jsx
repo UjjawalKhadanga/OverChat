@@ -1,17 +1,49 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../providers/socket";
 
+function Member({ user, isConnected }) {
+  if (isConnected) return (
+      <li className="list-group-item bg-success" key={user._id}>
+        {user.name}
+      </li>
+  );
+  else return (
+      <li className="list-group-item bg-secondary" key={user._id}>
+        {user.name}
+      </li>
+  )
+}
 
 function Members({members}) {
+  const socket = useSocket();
+  const [membersStatus, setMembersStatus] = useState({})
+  useEffect(() => {
+    socket.on('userJoined', ({user})=>{
+      console.log(user, 'joined');
+      setMembersStatus(prev => {
+        return {...prev, [user._id]: true}
+      })
+    })
+    socket.on('userLeft', ({user})=>{
+      console.log(user, 'left');
+      setMembersStatus(prev => {
+        return {...prev, [user._id]: false}
+      })
+    })
+  
+    return () => {
+      socket.off('userJoined');
+      socket.off('userLeft');
+    }
+  }, [socket])
   return (
     <div className="d-flex flex-column">  
       <ul className="list-group">
         {members.map((member) => {
           return (
-            <li className="list-group-item" key={member._id}>
-              {member.name}
-            </li>
+            <Member user={member} isConnected={membersStatus[member._id] ?? false } key={member._id} />
           );
         })}
       </ul>

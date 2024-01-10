@@ -1,5 +1,9 @@
+import { useEffect, useRef, useState } from "react";
+import { useSocket } from "../../providers/socket";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
-function Message({name,avatar,message}) {
+function ChatMessage({name,avatar,message}) {
     return (
         <div className="row m-2">
             <div className="col-md-12">
@@ -30,7 +34,52 @@ function Message({name,avatar,message}) {
 }
 
 
-function ChatBox({messages}) {
+function ChatBox() {
+    const { roomId } = useParams();
+    const socket = useSocket()
+    const [messages, setMessages] = useState([/*{ sender: {name: "Admin"}, message: "Welcome to the room!", time: Date.now() }*/]);
+    const [typingUsers, setTypingUsers] = useState([]);
+    const typingTimoutRef = useRef(null)
+
+    useEffect(() => {
+        socket.on('message', (message, sender, time) =>{
+          console.log('Message mil gaya', message, sender);
+          setMessages((prev) => [...prev, {sender, message, time}])
+        })
+        socket.on('userJoined', ({user}) => {
+          console.log('user joined', user);
+          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} joined the room!`, time: Date.now() }])
+        })
+        socket.on('userLeft', ({user}) => {
+          console.log('user left', user);
+          setMessages((prev) => [...prev, {sender: {name: "Admin"}, message: `${user.name} left the room!`, time: Date.now() }])
+        })
+        socket.on('userTyping', ({user}) => {
+            typingTimoutRef.current && clearTimeout(typingTimoutRef.current)
+            console.log(user, 'is typing...');
+            setTypingUsers((prev) => {
+                if (!prev.find(p => p._id === user._id)) 
+                    return [...prev, user]
+                return prev;
+            });
+            typingTimoutRef.current = setTimeout(() => setTypingUsers((prev) => prev.filter((u) => u.id !== user.id)), 3000)
+        })
+        return () => {
+            socket.off('message');
+            socket.off('userJoined');
+            socket.off('userLeft');
+            socket.off('userTyping');
+        };
+      }, [socket]);
+
+    useEffect(() => {
+        // get all the messages from the server
+        axios.get(`http://localhost:8080/chat/room/${roomId}`, {withCredentials: true}).then((res) => {
+            console.log(res);
+            setMessages(res.data.chats);
+        });
+    }, [roomId]);
+
     return (
             <div className="container">
                 <div className="row">
@@ -38,11 +87,17 @@ function ChatBox({messages}) {
                         {
                             messages.length === 0 ? <div className='alert-dismissible'>{ `Itna sannata kyun h bhai :( ... Use chat box to write your first message 👇` }</div> :
                             messages.map((messageObj)=>{
-                                return <Message key={messageObj} name={messageObj.sender.name} avatar="https://via.placeholder.com/50" message={messageObj.message} />
+                                return <ChatMessage key={messageObj} name={messageObj.sender.name} avatar="https://via.placeholder.com/50" message={messageObj.message} />
                             })
                         }
                     </div>
                 </div>
+                {
+                    typingUsers.length > 0 &&
+                    <div>
+                        {`${typingUsers.map(u => u.name).join(', ')} typing...`}
+                    </div>
+                }
             </div>
     )
 }

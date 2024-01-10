@@ -7,8 +7,7 @@ const Chat = require("../models/chat")
 const socketAuth = require("../middlewares/socketAuth");
 
 const collections = {
-    // roomId : [socket1, socket2, ...]
-    // roomId : [socket1, socket2, ...]
+    // roomId : [{ socketId, userId }, {}, ...]
 };
 
 function init(server) {
@@ -19,14 +18,22 @@ function init(server) {
         const { room, user } = socket;
         const roomId = room._id.toString();
         const userId = user._id.toString();
+
+        if (!Object.prototype.hasOwnProperty.call(collections, roomId)) collections[roomId] = new Array();
+
+        // brodcast to the new user all the users that have already joined
+        collections[roomId].map(({ user }) => {
+            socket.emit('userJoined', { user })
+        })
     
         // join the room event
         socket.join(roomId);
-        if (!Object.prototype.hasOwnProperty.call(collections, roomId)) {
-            collections[roomId] = new Array();
-        }
-        collections[roomId].push(socket.id);
+        collections[roomId].push({socketId: socket.id, user });
         console.log(collections)
+
+
+        // brodcast to all the room members connected that a new user has joined
+        io.to(roomId).emit("userJoined", { user });
         
         // message event
         socket.on("message", async (message, time) => {
@@ -37,12 +44,19 @@ function init(server) {
                 console.log('Could not save', {message, userId, err});
             });
         });
+
+        // typing
+        socket.on("userTyping", () => {
+            console.log(`User ${user.name} is typing`);
+            socket.broadcast.to(roomId).emit("userTyping", {user});
+        });
     
         // disconnect event
         socket.on("disconnect", () => {
             console.log(`User Disconnected from socket ${socket.id}`);
-            const index = collections[roomId].indexOf(socket.id);
-            if (index > -1) collections[roomId].splice(index, 1);
+            socket.broadcast.to(roomId).emit("userLeft", { user })
+            const objToRemove = collections[roomId].find(obj => obj.socketId === socket.id);
+            collections[roomId].splice(collections[roomId].indexOf(objToRemove), 1);
         })
     });
 }
