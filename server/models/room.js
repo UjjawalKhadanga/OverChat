@@ -10,7 +10,7 @@ const roomSchema = new mongoose.Schema({
     description:{ type: String },
     owner: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
     members: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-}, { collection: "Room" });
+}, { collection: "OverChat.Room" });
 
 // hash the Roompasswords before saving them to the database
 roomSchema.pre('save', function(next) {

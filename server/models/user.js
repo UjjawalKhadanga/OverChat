@@ -6,7 +6,7 @@ SALT_WORK_FACTOR = 10;
 const userSchema = new mongoose.Schema({
     name: { type: String, lowercase: true, unique: true, required: true },
     password: { type: String, required: true }
-}, { collection: "User" });
+}, { collection: "OverChat.User" });
 
 // hash the passwords before saving them to the database
 userSchema.pre('save', async function(next) {

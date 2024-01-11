@@ -1,6 +1,4 @@
 const { Server } = require("socket.io");
-const config = require("config");
-
 const User = require("../models/user");
 const Chat = require("../models/chat")
 
@@ -11,7 +9,7 @@ const collections = {
 };
 
 function init(server) {
-    const io = new Server(server, { cors : { origin : config.get("clientUrl"), credentials: true } });
+    const io = new Server(server, { cors : { origin : process.env.CLIENT_URL, credentials: true } });
     io.use(socketAuth);
     io.on("connection", (socket) => {
         console.log(`User joined room ${socket.room.name} with socketId: ${socket.id}`);

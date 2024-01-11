@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
 
-const JWT_SECRET = config.get("JWT_SECRET");
+const JWT_SECRET = process.env.JWT_SECRET
 
 // Auth Middleware
 module.exports = function (req,res,next){

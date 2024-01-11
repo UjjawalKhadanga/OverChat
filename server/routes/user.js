@@ -4,10 +4,9 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require('config');
 const jwtAuth = require("../middlewares/jwtAuth");
 
-const JWT_SECRET = config.get("JWT_SECRET");
+const JWT_SECRET = process.env.JWT_SECRET
 
 //** Login /Reg System***************************************
 

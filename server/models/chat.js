@@ -5,7 +5,7 @@ const chatSchema = new mongoose.Schema({
     sender: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
     message: { type: String, required: true },
     time: { type: Date, required: true, default: Date.now() }
-}, { collection: "Chat" });
+}, { collection: "OverChat.Chat" });
 
 
 module.exports = mongoose.model("Chat", chatSchema);    
