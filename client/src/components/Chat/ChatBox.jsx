@@ -2,32 +2,56 @@ import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../providers/socket";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
-function ChatMessage({name,avatar,message,isLocal,isAdmin}) {
+function LocalChatMessage({name,avatar,message,time}) {
     return (
-        <div className={`row m-1`} >
-                <div className={`card  ${isLocal ? 'justify-content-right' : 'justify-content-left' } ${isAdmin ? 'justify-content-center' : ''}`} >
-                    <div className="card-body h-100">
-                        <div className="row">
-                            <div className="col-1" style={{'min-width': '4rem'}}>
-                                <img src={avatar} className="img-fluid rounded-circle w-auto" alt="avatar" />
-                            </div>
-                            <div className="col-11">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <div className="card-title h5 opacity-75">{name}</div>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-12">
-                                        <p className="card-text fs-5">{message}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div className="d-flex justify-content-end mb-4">
+            <div className="ms-auto rounded bg-primary p-2 text-white">
+                {message}
+            </div>
+            <div className="ms-3">
+                <img 
+                src={avatar}
+                className="rounded-circle" 
+                alt={`avatar-${name}`}
+                />
+                <small className="d-block text-muted">{time}</small>
+            </div>
         </div>
+    )
+}
+
+function RemoteChatMessage({name,avatar,message,time}) {
+    return (
+        <div className="d-flex justify-content-start mb-4">
+            <div className="ms-3">
+                <img 
+                src={avatar}
+                className="rounded-circle" 
+                alt={`avatar-${name}`}
+                />
+                <small className="d-block text-muted">{time}</small>
+            </div>
+            <div className="bg-light p-2 me-auto rounded">
+                {message}
+            </div>
+        </div>
+    )
+}
+
+function Message({name,time,avatar,message,isLocal,isAdmin}) {
+    const timeString = moment(time).format('hh:mm A')
+    if (isAdmin) return (
+        <div className={`row m-1`}>
+            <div className="w-100 text-center">
+                {`[${timeString}] ${message}`}
+            </div>
+        </div>
+    )
+    return (
+        isLocal ? <LocalChatMessage name={name} message={message} time={timeString} avatar={avatar}/> : 
+        <RemoteChatMessage name={name} message={message} time={timeString} avatar={avatar}/>
     )
 }
 
@@ -84,25 +108,21 @@ function ChatBox() {
     }, [roomId]);
 
     return (
-            <div className="container">
-                <div className="row">
-                    <div className="p-4">
-                        {
-                            messages.length === 0 ? <div className='alert-dismissible'>{ `Itna sannata kyun h bhai :( ... Use chat box to write your first message 👇` }</div> :
-                            messages.map((messageObj)=>{
-                                const isLocal = (currentUser._id === messageObj.sender._id);
-                                return <ChatMessage key={messageObj} name={messageObj.sender.name} avatar="https://via.placeholder.com/50" message={messageObj.message} isLocal={isLocal} isAdmin={messageObj.isAdmin}/>
-                            })
-                        }
-                    </div>
+        <div className="d-flex flex-column h-100">
+            {
+                messages.length === 0 ? <div className='alert-dismissible'>{ `Itna sannata kyun h bhai :( ... Use chat box to write your first message 👇` }</div> :
+                messages.map((messageObj)=>{
+                    const isLocal = (currentUser._id === messageObj.sender._id);
+                    return <Message key={messageObj} time={messageObj.time} name={messageObj.sender.name} avatar="https://via.placeholder.com/40" message={messageObj.message} isLocal={isLocal} isAdmin={messageObj.isAdmin}/>
+                })
+            }
+            {
+                typingUsers.length > 0 &&
+                <div>
+                    {`${typingUsers.map(u => u.name).join(', ')} typing...`}
                 </div>
-                {
-                    typingUsers.length > 0 &&
-                    <div>
-                        {`${typingUsers.map(u => u.name).join(', ')} typing...`}
-                    </div>
-                }
-            </div>
+            }
+        </div>
     )
 }
 

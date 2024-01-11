@@ -20,15 +20,14 @@ function Card({_id, name, owner, description, isOwner}) {
   };
 
   return (
-    <div className="col-4 mt-3 d-flex flex-wrap" style={{"min-width": "15rem"}}>
-      <div className="card overflow-hidden">
+      <div className="card w-100 m-1" >
         <div className="card-body">
           <div className="d-flex justify-content-between align-content-between">
             <h5 className=" d-flex align-items-center card-title">{name}</h5>
             <div className="text-muted d-flex small">
               <cite>Owner: {owner.name}</cite>
             </div>
-          </div>50
+          </div>
           <h6 className="card-subtitle mb-2 text-muted small">#{_id}</h6>
           <p className="d-flex justify-content-between">
             {description}
@@ -45,7 +44,6 @@ function Card({_id, name, owner, description, isOwner}) {
           }
         </div>
       </div>
-    </div>
   );
 }
 
@@ -71,7 +69,7 @@ function RoomConnect({userInfo}) {
   return (
     <div className="container">
       <div className="overflow-auto m-2">
-        <div className="row m-0">
+        <div className="m-2">
           {
             rooms.map((room) => {
               const isOwner = room.owner._id === userInfo._id;

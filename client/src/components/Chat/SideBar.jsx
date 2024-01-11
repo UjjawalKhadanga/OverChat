@@ -72,7 +72,7 @@ function SideBar({roomId}) {
   };
 
   return (
-      <div className="p-3 bg-light position-fixed h-100 col-2 d-flex flex-column">
+      <div className="p-3 bg-light d-flex flex-column h-100">
         <div className="d-flex align-items-center justify-content-center flex-column">
           <div className="h1">{roomName} </div>
           <div className=""> {roomDesc} </div>
