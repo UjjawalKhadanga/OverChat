@@ -1,11 +1,10 @@
 const User = require("../models/user");
 const Room = require("../models/room");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const cookie = require('cookie');
 
 
-const JWT_SECRET = config.get("JWT_SECRET");
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // get the room id from the socket and check if the user is a member of the room
 async function socketAuth(socket, next) {
