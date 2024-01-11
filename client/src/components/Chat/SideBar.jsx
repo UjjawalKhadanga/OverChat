@@ -59,7 +59,7 @@ function SideBar({roomId}) {
   const [roomMembers,setRoomMembers] = useState([/* { _id: "1234567890", name: "Member 1" } */]);
   useEffect(() => {
     // get room metadata from the server
-    axios.get(`${process.env.API_SERVER_URL}/room/${roomId}`, {withCredentials: true}).then((res) => {
+    axios.get(`${process.env.REACT_APP_API_SERVER_URL}/room/${roomId}`, {withCredentials: true}).then((res) => {
       console.log(res);
       setRoomName(res.data.name);
       setRoomDesc(res.data.description);

@@ -7,7 +7,7 @@ function CreateRoom() {
   const [desc,setDesc]=useState('')
 
   async function submit(){
-    await axios.put(`${process.env.API_SERVER_URL}/room/`,
+    await axios.put(`${process.env.REACT_APP_API_SERVER_URL}/room/`,
       {
         name,
         password:pwd,
