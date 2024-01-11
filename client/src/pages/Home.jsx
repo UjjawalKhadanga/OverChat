@@ -7,7 +7,7 @@ import RoomConnect from '../components/RoomConnect/RoomConnect'
 function Home() {
   const [userInfo, setUserInfo] = useState({})
   useEffect(() => {
-    axios.get(`http://localhost:8080/user/info`, {withCredentials: true}).then((res) => {
+    axios.get(`${process.env.API_SERVER_URL}/user/info`, {withCredentials: true}).then((res) => {
       console.log(res);
       setUserInfo(res.data);
     });

@@ -9,7 +9,7 @@ export const useSocket = () => {
 
 export const SocketProvider = ({ children }) => {
     const socket = useMemo(() => {
-        return io("http://localhost:8080", {
+        return io(`${process.env.SOCKET_SERVER_URL}`, {
             autoConnect: false,
             withCredentials: true
         });

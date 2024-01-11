@@ -7,14 +7,14 @@ function Card({_id, name, owner, description, isOwner}) {
 
   const handleJoinClicked = async (e) => {
     e.preventDefault();
-    const res = await axios.post(`http://localhost:8080/room/join/${_id}`, {}, {withCredentials: true})
+    const res = await axios.post(`${process.env.API_SERVER_URL}/room/join/${_id}`, {}, {withCredentials: true})
     console.log(res.data)
     navigate(`/chat/${_id}`, { replace: true })
   };
 
   const handleDeleteClicked = async (e) => {
     e.preventDefault();
-    const res = await axios.delete(`http://localhost:8080/room/${_id}`, {withCredentials: true})
+    const res = await axios.delete(`${process.env.API_SERVER_URL}/room/${_id}`, {withCredentials: true})
     console.log(res.data)
     window.location.reload();
   };
@@ -60,7 +60,7 @@ function RoomConnect({userInfo}) {
         }
     ]);
     useEffect(()=>{
-        axios.get('http://localhost:8080/room/', {withCredentials: true})
+        axios.get(`${process.env.API_SERVER_URL}/room/`, {withCredentials: true})
         .then((res)=>{
             console.log(res.data)
             setRooms(res.data)

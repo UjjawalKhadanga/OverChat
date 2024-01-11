@@ -8,7 +8,7 @@ const Login = () => {
     const [userName,setUserName]=useState('');
     const [password,setPassword]=useState('');
     const submit = async ()=>{
-      const res=await axios.post('http://localhost:8080/user/login',
+      const res=await axios.post(`${process.env.API_SERVER_URL}/user/login`,
         {
           name:userName,
           password:password

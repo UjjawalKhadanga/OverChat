@@ -10,7 +10,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const submit = async () => {
       if (confirmPassword !== password) return alert('Passwords do not match');
-      const res = await axios.post('http://localhost:8080/user/register', {
+      const res = await axios.post(`${process.env.API_SERVER_URL}/user/register`, {
           name: userName,
           password: password
       })

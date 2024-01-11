@@ -101,7 +101,7 @@ function ChatBox() {
 
     useEffect(() => {
         // get all the messages from the server
-        axios.get(`http://localhost:8080/chat/room/${roomId}`, {withCredentials: true}).then((res) => {
+        axios.get(`${process.env.API_SERVER_URL}/chat/room/${roomId}`, {withCredentials: true}).then((res) => {
             console.log(res);
             setMessages(res.data.chats);
         });
