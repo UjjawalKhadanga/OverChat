@@ -16,6 +16,10 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL, credentials:true, }));
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res) => {
+    console.log(req);
+    next();
+})
 
 // Database Connection
 mongoose.connect(process.env.DB_URI).then(() => console.log("MongoDB Connected")).catch(err => console.log('Err in connecting to db', err));
