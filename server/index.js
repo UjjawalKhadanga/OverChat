@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
@@ -13,8 +13,8 @@ const chat = require("./routes/chat");
 const app = express();
 
 // Middlewares
+app.use(cors({ origin: process.env.CLIENT_URL, credentials:true, }));
 app.use(express.json());
-app.use(cors({ origin: 'https://overchat.onrender.com', credentials:true, }));
 app.use(cookieParser());
 
 // Database Connection
