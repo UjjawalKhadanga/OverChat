@@ -14,7 +14,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'https://overchat.onrender.com', credentials:true, }));
 app.use(cookieParser());
 
 // Database Connection
