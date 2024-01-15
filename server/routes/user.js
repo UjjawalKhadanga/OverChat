@@ -40,7 +40,7 @@ router.post('/login', async (req,res,next) => {
         if (isvalid){
             // create jwt and assign as cookie
             const token = jwt.sign({ _id : user._id }, JWT_SECRET )
-            res.cookie('auth', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+            res.cookie('auth', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7, sameSite: "none", secure: true });
 
             return res.status(200).json({ msg: "success", _id: user._id })
         } else return res.status(400).json({ msg: "Password Incorrect" });
