@@ -14,7 +14,7 @@ async function socketAuth(socket, next) {
 
         const {_id: userId} = jwt.verify(token, JWT_SECRET);
     
-        const user = await User.findById(userId).lean();
+        const user = await User.findById(userId, { name: 1 }).lean();
         if (!user) return next(new Error("Invalid User"));
         const room = await Room.findById(roomId).lean();
         if (!room) return next(new Error("Invalid Room"));
@@ -25,6 +25,7 @@ async function socketAuth(socket, next) {
         socket.user = user;
         next();
     } catch (err) {
+        console.log(err);
         next(err);
     }
 }

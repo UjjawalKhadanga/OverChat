@@ -28,6 +28,11 @@ app.use("/room", room);
 
 app.use("/chat", chat);
 
+// Custom err handler
+app.use((err, req, res, next) => {
+    res.status(500).json({ success: false, msg: "Internal Server Error", error: err.message });
+})
+
 
 // socket io
 const server = http.createServer(app);

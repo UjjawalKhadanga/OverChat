@@ -15,10 +15,12 @@ router.post('/register', async (req,res,next) => {
     try {
         const { name, password } = req.body;
         //----------------------------------------------
+        const isUserNameTaken = await User.countDocuments({ name });
+        if (isUserNameTaken) return res.status(403).json({success: false, msg: "UserName already exists"});
         const user = await User.create({ name, password });
         //----------------------------------------------
         console.log(user);
-        return res.send({ msg: "User has been successfully registered", name: user.name });
+        return res.send({ success:true, msg: "User has been successfully registered", name: user.name });
     } catch(err) {
         console.log(err);
         next(err);
@@ -52,15 +54,25 @@ router.post('/login', async (req,res,next) => {
 
 // Logout
 router.post('/logout',jwtAuth, async (req,res) => {
-    if(!req.user) return res.status(400).json({error : 'No User logged in'})
-    res.cookie('auth',{},{ maxAge:1 });
-    return res.status(200).json({ success :'logout successfull' });
+    try {
+        if(!req.user) return res.status(400).json({error : 'No User logged in'})
+        res.cookie('auth',{},{ maxAge:1 });
+        return res.status(200).json({ success :'logout successfull' });
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
 });
 
 router.get('/info',jwtAuth, async (req,res) => {
-    if(!req.user) return res.status(400).json({error : 'No User logged in'})
-    const user = await User.findById(req.user._id).lean();
-    return res.status(200).json(user);  
+    try {
+        if(!req.user) return res.status(400).json({error : 'No User logged in'})
+        const user = await User.findById(req.user._id).lean();
+        return res.status(200).json(user);  
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
 })
 
 module.exports = router;

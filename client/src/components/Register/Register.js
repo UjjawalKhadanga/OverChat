@@ -13,7 +13,7 @@ function Register() {
       const res = await axios.post(`${process.env.REACT_APP_API_SERVER_URL}/user/register`, {
           name: userName,
           password: password
-      })
+      }).catch(errObj => alert(`[Status Code:${errObj.response.status}] ${errObj.response.data.msg}`));
       if(res.status === 200) setTimeout(() => navigate('/'), 1000);
     }
   return (
