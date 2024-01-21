@@ -22,7 +22,7 @@ const Login = () => {
     }
     return (
       <div className="container">
-          <div class="login-box">
+          <div className="login-box">
               <form>
                 <div className="user-box">
                   <input type="text" name required onChange={(e)=>setUserName(e.target.value)}/>

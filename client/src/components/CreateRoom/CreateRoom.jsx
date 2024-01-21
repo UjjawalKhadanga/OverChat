@@ -1,7 +1,9 @@
 import axios from 'axios';
 import React,{useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function CreateRoom() {
+  const navigate = useNavigate()
   const [name,setName]=useState('')
   const [pwd,setPwd]=useState('')
   const [desc,setDesc]=useState('')
@@ -47,9 +49,9 @@ function CreateRoom() {
           />
         </div>
         <div className="mb-3">
-          <label for="comment">Description:</label>
+          <label htmlFor="comment">Description:</label>
           <textarea
-            class="form-control"
+            className="form-control"
             rows="5"
             id="comment"
             name="text"
@@ -65,7 +67,7 @@ function CreateRoom() {
               // post request to backend for creating room
               await submit();
               console.log(name,pwd,desc);
-              setTimeout(() => window.location.reload(), 300);
+              setTimeout(() => navigate(0), 300);
             }
           }
         >

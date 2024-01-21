@@ -18,7 +18,7 @@ function Register() {
     }
   return (
     <div className="container">
-      <div class="register-box">
+      <div className="register-box">
         <form>
           <div className="user-box">
             <input type="text" name required onChange={(e)=>setUserName(e.target.value)}/>

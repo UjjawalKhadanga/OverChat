@@ -16,7 +16,7 @@ function Card({_id, name, owner, description, isOwner}) {
     e.preventDefault();
     const res = await axios.delete(`${process.env.REACT_APP_API_SERVER_URL}/room/${_id}`, {withCredentials: true})
     console.log(res.data)
-    window.location.reload();
+    navigate(0);
   };
 
   return (
